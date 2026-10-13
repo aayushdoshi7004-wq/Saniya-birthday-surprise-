@@ -1,4 +1,4 @@
-const photos = ["Images/photo1.jpg", "Images/photo2.jpg", "Images/photo3.jpg", "Images/photo4.jpg"];
+const photos = ["photo1.jpg", "photo2.jpg", "photo3.jpg", "photo4.jpg"];
 const ALLOWED_NAME = "SANIYA";
 
 function goToScene(id) {
