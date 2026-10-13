@@ -1,0 +1,430 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: Georgia, 'Times New Roman', serif; }
+
+.scene {
+    position: fixed;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #fff;
+    overflow: hidden;
+}
+.scene.active { display: flex; }
+
+/* ===========================
+   SCENE 1 — RAIN + UNLOCK
+=========================== */
+
+.sceneRain { background: linear-gradient(180deg, #10141c 0%, #080a10 70%, #040506 100%); z-index: 10; }
+
+#rainCanvas, #rippleCanvas { position: absolute; inset: 0; z-index: 1; }
+#rippleCanvas { z-index: 2; pointer-events: none; }
+
+.lightning { position: absolute; inset: 0; background: rgba(200,220,255,0); pointer-events: none; z-index: 2; }
+.lightning.flash { animation: flashAnim 0.35s ease; }
+@keyframes flashAnim {
+    0% { background: rgba(200,220,255,0); }
+    15% { background: rgba(210,225,255,0.5); }
+    30% { background: rgba(200,220,255,0.08); }
+    45% { background: rgba(210,225,255,0.35); }
+    100% { background: rgba(200,220,255,0); }
+}
+
+.rainDim { position: absolute; inset: 0; background: rgba(0,0,0,0.15); z-index: 1; transition: background 1.5s ease; }
+
+.rainContent { position: relative; z-index: 3; padding: 20px; }
+
+.waitingText {
+    font-size: 16px; font-style: italic; color: rgba(255,255,255,0.75);
+    letter-spacing: 0.5px; margin-bottom: 40px; opacity: 0; animation: fadeIn 2s ease forwards;
+}
+@keyframes fadeIn { to { opacity: 1; } }
+
+.unlockBox { opacity: 0; animation: fadeIn 1.5s ease 1.5s forwards; }
+.unlockLabel {
+    font-family: Arial, sans-serif; font-size: 11px; letter-spacing: 3px;
+    color: rgba(255,255,255,0.5); margin-bottom: 14px;
+}
+#nameInput {
+    width: 220px; max-width: 65vw; background: transparent; border: none; outline: none;
+    text-align: center; font-family: Arial, sans-serif; font-size: 22px; letter-spacing: 6px;
+    color: #fff; text-transform: uppercase; padding: 6px 0;
+    text-shadow: 0 0 14px rgba(142,203,255,0.5);
+}
+.unlockUnderline {
+    width: 220px; max-width: 65vw; height: 1px; margin: 0 auto;
+    background: rgba(255,255,255,0.25); position: relative; overflow: hidden;
+}
+.unlockUnderline::after {
+    content: ""; position: absolute; left: -100%; top: 0; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, #8ecbff, transparent);
+    animation: underlineGlow 2.6s ease-in-out infinite;
+}
+@keyframes underlineGlow { to { left: 100%; } }
+
+.spacedName {
+    display: none; font-size: 40px; letter-spacing: 14px; font-weight: bold;
+    color: #fff; text-shadow: 0 0 24px rgba(142,203,255,0.9); margin-top: 10px;
+}
+.accessGranted {
+    display: none; font-family: Arial, sans-serif; font-size: 13px; letter-spacing: 4px;
+    color: #8ecbff; margin-top: 16px; text-shadow: 0 0 12px rgba(142,203,255,0.7);
+}
+
+/* ===========================
+   SCENE 2 — PUDDLE
+=========================== */
+
+.scenePuddle { background: linear-gradient(180deg, #2a3040 0%, #12151e 60%, #05060a 100%); z-index: 9; }
+.streetBg { position: absolute; inset: 0; background: repeating-linear-gradient(100deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 60px); }
+
+.puddle {
+    position: relative; width: 220px; height: 90px; border-radius: 50%;
+    overflow: hidden; background: #060a12; box-shadow: 0 0 60px rgba(0,0,0,0.6) inset;
+    transform: scale(0.5); opacity: 0; animation: puddleZoom 2.2s ease forwards;
+    cursor: pointer;
+}
+@keyframes puddleZoom { to { transform: scale(1); opacity: 1; } }
+
+.reflectionImg {
+    position: absolute; left: 50%; top: 0; width: 160px; height: 200px; object-fit: cover;
+    transform: translateX(-50%) scaleY(-1); opacity: 0.55; filter: blur(1.5px) brightness(0.7);
+}
+.puddleShine {
+    position: absolute; inset: 0; background: linear-gradient(120deg, rgba(255,255,255,0.08), transparent 40%);
+    animation: shineMove 4s ease-in-out infinite;
+}
+@keyframes shineMove { 0%,100% { opacity: 0.4; } 50% { opacity: 0.8; } }
+
+.puddleHint {
+    margin-top: 24px; font-family: Arial, sans-serif; font-size: 12px; letter-spacing: 2px;
+    color: rgba(255,255,255,0.5); opacity: 0; animation: fadeIn 1s ease 2.4s forwards;
+}
+
+/* ===========================
+   PHOTO SCENES (shared)
+=========================== */
+
+.photoScene { background: #000; z-index: 8; }
+.photoImg { width: 260px; height: 340px; object-fit: cover; border-radius: 4px; }
+.photoCaption {
+    margin-top: 22px; font-size: 20px; font-style: italic; color: #fff;
+    text-shadow: 0 0 14px rgba(255,255,255,0.4); opacity: 0; animation: fadeIn 1s ease forwards;
+}
+.continueBtn {
+    margin-top: 30px; background: none; border: 1px solid rgba(255,255,255,0.35); color: #fff;
+    font-family: Arial, sans-serif; font-size: 12px; letter-spacing: 2px;
+    padding: 10px 22px; border-radius: 24px; cursor: pointer; opacity: 0;
+    animation: fadeIn 1s ease forwards; transition: 0.3s;
+}
+.continueBtn:hover { background: rgba(255,255,255,0.1); }
+
+/* ---- Photo 1: ripple reveal ---- */
+#rippleRevealCanvas { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.rippleReveal { opacity: 0; filter: blur(14px); transform: scale(1.08); transition: opacity 1.6s ease, filter 1.6s ease, transform 1.6s ease; }
+.rippleReveal.revealed { opacity: 1; filter: blur(0); transform: scale(1); }
+
+/* ---- Photo 2: projector ---- */
+.projectorScene { background: #060606; }
+.projectorBeam {
+    position: absolute; top: -10%; left: 50%; width: 2px; height: 0;
+    background: linear-gradient(180deg, rgba(255,248,220,0.35), rgba(255,248,220,0));
+    transform: translateX(-50%); clip-path: polygon(48% 0, 52% 0, 100% 100%, 0% 100%);
+    animation: beamGrow 1.4s ease forwards;
+    pointer-events: none;
+}
+@keyframes beamGrow { to { width: 340px; height: 60%; } }
+.filmGrain {
+    position: absolute; inset: 0; z-index: 3; pointer-events: none; opacity: 0.05;
+    background-image: radial-gradient(circle, #fff 1px, transparent 1px);
+    background-size: 3px 3px; animation: grainShift 0.2s steps(2) infinite;
+}
+@keyframes grainShift { 0% { transform: translate(0,0); } 100% { transform: translate(-2px,2px); } }
+.scanlines {
+    position: absolute; inset: 0; z-index: 3; pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0 1px, transparent 1px 3px);
+}
+.projectorReveal {
+    opacity: 0; filter: sepia(0.3) brightness(0.8) contrast(1.1);
+    animation: projectorFlicker 1.8s ease 0.4s forwards;
+}
+@keyframes projectorFlicker {
+    0% { opacity: 0; }
+    20% { opacity: 0.6; }
+    35% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+    70% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+/* ---- Photo 3: constellation ---- */
+.constScene { background: #030305; }
+#constCanvas { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.constPhoto { position: relative; z-index: 1; opacity: 0; transition: opacity 2s ease; }
+.constPhoto.revealed { opacity: 1; }
+
+/* ---- Photo 4: blur to sharp ---- */
+.blurPhoto { filter: blur(22px); transition: filter 0.1s linear; }
+.blurHint {
+    margin-top: 20px; font-family: Arial, sans-serif; font-size: 12px; letter-spacing: 1px;
+    color: rgba(255,255,255,0.55);
+}
+
+/* ===========================
+   SCENE 4 — MYSTERY
+=========================== */
+
+.sceneMystery { background: #050505; z-index: 7; padding: 20px; }
+.mysteryLine {
+    font-size: 19px; font-style: italic; margin-bottom: 18px; opacity: 0;
+    animation: fadeIn 1.2s ease forwards;
+}
+.mysteryFinal { margin-top: 26px; color: #ffd97a; text-shadow: 0 0 14px rgba(255,217,122,0.6); }
+
+.memorySlots { display: flex; gap: 12px; margin: 20px 0; flex-wrap: wrap; justify-content: center; max-width: 340px; }
+.memSlot {
+    width: 58px; height: 74px; border-radius: 6px; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.25); opacity: 0; animation: fadeIn 0.6s ease forwards;
+}
+.memSlot img { width: 100%; height: 100%; object-fit: cover; }
+.memSlot.empty {
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.03); font-size: 20px; color: rgba(255,255,255,0.3);
+    animation: emptyPulse 1.8s ease-in-out infinite, fadeIn 0.6s ease forwards;
+}
+@keyframes emptyPulse { 0%,100% { border-color: rgba(255,255,255,0.25); } 50% { border-color: rgba(255,217,122,0.6); } }
+
+/* ===========================
+   SCENE 5 — CLOCK FREEZE
+=========================== */
+
+.sceneClock { background: #020203; z-index: 6; }
+.clockDisplay {
+    font-family: 'Courier New', monospace; font-size: 46px; letter-spacing: 2px;
+    color: #8ecbff; text-shadow: 0 0 20px rgba(142,203,255,0.6);
+}
+.freezeLine {
+    margin-top: 30px; font-size: 18px; font-style: italic; color: rgba(255,255,255,0.8);
+    opacity: 0; max-width: 280px;
+}
+
+/* ===========================
+   SCENE 6 — LAST RAINDROP
+=========================== */
+
+.sceneLastDrop { background: #000; z-index: 5; }
+
+.lastDrop {
+    position: relative;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #cfe8ff, #6fa8dc 60%, #1a3a5c 100%);
+    box-shadow: 0 0 10px rgba(142,203,255,0.6);
+    transition: width 2.5s ease, height 2.5s ease, box-shadow 2.5s ease, background 2s ease, transform 1.2s ease-in;
+}
+.lastDrop.zoomed {
+    width: 180px; height: 180px;
+    box-shadow: 0 0 60px rgba(142,203,255,0.5);
+}
+.lastDrop.golden {
+    background: radial-gradient(circle at 35% 30%, #fff6d8, #ffd97a 55%, #b8860b 100%);
+    box-shadow: 0 0 70px rgba(255,217,122,0.8);
+}
+.lastDrop.falling {
+    transform: translateY(46vh);
+}
+.lastDrop.vanished { opacity: 0; transition: opacity 0.3s ease; }
+
+.dropThumbs {
+    position: absolute; top: 50%; left: 50%; width: 180px; height: 180px;
+    transform: translate(-50%, -50%); border-radius: 50%; overflow: hidden;
+    pointer-events: none; opacity: 0; transition: opacity 1s ease;
+}
+.dropThumbs.show { opacity: 0.65; }
+.dropThumbs img {
+    position: absolute; width: 50%; height: 50%; object-fit: cover; filter: brightness(0.8);
+}
+.dropThumbs img:nth-child(1) { top: 0; left: 0; }
+.dropThumbs img:nth-child(2) { top: 0; right: 0; }
+.dropThumbs img:nth-child(3) { bottom: 0; left: 0; }
+.dropThumbs img:nth-child(4) { bottom: 0; right: 0; }
+
+#dropRippleCanvas { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+
+.rippleWord {
+    position: absolute; z-index: 3; font-size: 22px; letter-spacing: 4px;
+    color: #ffd97a; text-shadow: 0 0 18px rgba(255,217,122,0.8);
+    opacity: 0; font-family: Arial, sans-serif;
+}
+.rippleWord.show { animation: wordPulse 1.3s ease; }
+@keyframes wordPulse {
+    0% { opacity: 0; transform: scale(0.8); }
+    30% { opacity: 1; transform: scale(1.05); }
+    70% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(1.1); }
+}
+
+.dropLine {
+    position: absolute; bottom: 14%; font-size: 18px; font-style: italic;
+    color: rgba(255,255,255,0.85); opacity: 0;
+}
+.dropLine.show { animation: fadeIn 1.4s ease forwards; }
+
+/* ===========================
+   SCENE 7 — FOUR MEMORIES AWAKEN
+=========================== */
+
+.sceneMemories { background: #040406; z-index: 4; }
+#beamCanvas { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+
+.memFrame {
+    position: absolute; width: 110px; height: 150px; border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 6px; overflow: hidden; background: rgba(255,255,255,0.02);
+    box-shadow: 0 0 25px rgba(142,203,255,0.15);
+    animation: memFloat 4s ease-in-out infinite;
+    z-index: 2;
+}
+.memFrame1 { top: 12%; left: 8%; }
+.memFrame2 { top: 12%; right: 8%; animation-delay: 0.4s; }
+.memFrame3 { bottom: 16%; left: 8%; animation-delay: 0.8s; }
+.memFrame4 { bottom: 16%; right: 8%; animation-delay: 1.2s; }
+@keyframes memFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+.memImg { width: 100%; height: 100%; object-fit: cover; }
+.memCanvas { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+
+.memImgRipple { opacity: 0; filter: blur(10px); transition: opacity 1.4s ease, filter 1.4s ease; }
+.memImgRipple.revealed { opacity: 1; filter: blur(0); }
+
+.memScan {
+    position: absolute; inset: 0; z-index: 3; pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.2) 0 1px, transparent 1px 3px);
+    opacity: 0.5;
+}
+.memImgProjector { opacity: 0; filter: sepia(0.3) brightness(0.8); animation: memFlicker 1.6s ease forwards; animation-play-state: paused; }
+.memImgProjector.play { animation-play-state: running; }
+@keyframes memFlicker {
+    0% { opacity: 0; } 25% { opacity: 0.5; } 40% { opacity: 0.2; }
+    60% { opacity: 0.8; } 100% { opacity: 1; }
+}
+
+.memImgParticle { opacity: 0; transition: opacity 1.6s ease; }
+.memImgParticle.revealed { opacity: 1; }
+
+.memImgBlur { filter: blur(16px); transition: filter 1.8s ease; }
+.memImgBlur.sharp { filter: blur(0); }
+
+.memLine {
+    position: absolute; bottom: 10%; font-size: 17px; font-style: italic;
+    color: rgba(255,255,255,0.85); opacity: 0; max-width: 300px; z-index: 5;
+}
+.memLine.show { animation: fadeIn 1.4s ease forwards; }
+
+/* ===========================
+   SCENE 8 — CAKE MATERIALIZATION
+=========================== */
+
+.sceneCake { background: radial-gradient(ellipse at 50% 55%, #1a1030 0%, #05030a 75%); z-index: 3; }
+#cakeGlowCanvas { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+
+.glowSphere {
+    position: relative; width: 20px; height: 20px; border-radius: 50%;
+    background: radial-gradient(circle, #fff6d8, #ffd97a 60%, transparent 100%);
+    box-shadow: 0 0 20px rgba(255,217,122,0.7);
+    transition: width 1.6s ease, height 1.6s ease, opacity 1s ease;
+    z-index: 2;
+}
+.glowSphere.expand { width: 160px; height: 160px; box-shadow: 0 0 90px rgba(255,217,122,0.8); }
+.glowSphere.fade { opacity: 0; }
+
+.cakeWrap {
+    position: absolute; display: flex; flex-direction: column; align-items: center;
+    opacity: 0; transform: scale(0.6); filter: blur(10px);
+    transition: opacity 1.4s ease, transform 1.4s ease, filter 1.4s ease;
+    z-index: 2;
+}
+.cakeWrap.materialized { opacity: 1; transform: scale(1); filter: blur(0); }
+
+.cakeBody { font-size: 80px; }
+.candleRow { display: flex; gap: 14px; margin-bottom: -6px; height: 22px; }
+.candle { width: 4px; height: 20px; background: #f3e6c4; border-radius: 2px; position: relative; }
+.flame {
+    position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+    width: 8px; height: 14px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    background: radial-gradient(circle, #fff6c0, #ffb347 60%, #ff7a00 100%);
+    opacity: 0; box-shadow: 0 0 10px rgba(255,170,60,0.8);
+}
+.flame.lit { animation: flameFlicker 1.4s ease-in-out infinite; }
+@keyframes flameFlicker {
+    0%,100% { opacity: 1; transform: translateX(-50%) scale(1); }
+    50% { opacity: 0.85; transform: translateX(-50%) scale(0.92); }
+}
+
+/* ===========================
+   SCENE 9 — FINAL BIRTHDAY REVEAL
+=========================== */
+
+.sceneFinal { background: radial-gradient(ellipse at 50% 35%, #2a1850 0%, #0a0515 75%); z-index: 2; padding: 30px 20px; }
+#goldRainCanvas { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+
+.finalCakeWrap { position: relative; width: 220px; height: 220px; margin-bottom: 10px; z-index: 2; }
+.finalCake {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    font-size: 70px; filter: drop-shadow(0 0 20px rgba(255,217,122,0.6));
+}
+.orbitPhoto {
+    position: absolute; width: 50px; height: 50px; border-radius: 50%; object-fit: cover;
+    border: 2px solid rgba(255,217,122,0.7); box-shadow: 0 0 14px rgba(255,217,122,0.5);
+    opacity: 0; animation: orbitFloat 6s ease-in-out infinite, fadeIn 1.2s ease forwards;
+}
+.orbit1 { top: 0; left: 10px; animation-delay: 0s, 0.2s; }
+.orbit2 { top: 0; right: 10px; animation-delay: 0.6s, 0.5s; }
+.orbit3 { bottom: 0; left: 10px; animation-delay: 1.2s, 0.8s; }
+.orbit4 { bottom: 0; right: 10px; animation-delay: 1.8s, 1.1s; }
+@keyframes orbitFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+.bdayReveal {
+    position: relative; z-index: 2; font-size: 30px; font-weight: bold; line-height: 1.4;
+    margin-bottom: 20px;
+}
+.sweepLine {
+    display: block; position: relative; color: #fff;
+    text-shadow: 0 0 18px rgba(255,217,122,0.7), 0 0 36px rgba(255,120,180,0.4);
+    opacity: 0;
+}
+.sweepLine.show {
+    animation: sweepReveal 1.3s ease forwards;
+}
+@keyframes sweepReveal {
+    0% { opacity: 0; letter-spacing: 10px; }
+    100% { opacity: 1; letter-spacing: 1px; }
+}
+
+.universeLine {
+    position: relative; z-index: 2; font-size: 16px; font-style: italic;
+    color: rgba(255,255,255,0.85); opacity: 0; margin-bottom: 18px; max-width: 300px;
+}
+.finalDateText {
+    position: relative; z-index: 2; font-family: Arial, sans-serif; letter-spacing: 3px;
+    color: #ffd97a; font-size: 15px; opacity: 0; margin-bottom: 10px;
+}
+.finalSignText {
+    position: relative; z-index: 2; font-family: Arial, sans-serif; font-size: 13px;
+    color: rgba(255,255,255,0.5); opacity: 0;
+}
+
+/* ===========================
+   MOBILE
+=========================== */
+
+@media (max-width: 480px) {
+    .spacedName { font-size: 30px; letter-spacing: 10px; }
+    .photoImg { width: 220px; height: 290px; }
+    .clockDisplay { font-size: 36px; }
+    .memFrame { width: 90px; height: 120px; }
+    .bdayReveal { font-size: 24px; }
+    .cakeBody, .finalCake { font-size: 60px; }
+    .finalCakeWrap { width: 190px; height: 190px; }
+}

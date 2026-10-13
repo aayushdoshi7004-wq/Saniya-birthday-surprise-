@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Saniya</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============================================================
+     SCENE 1: RAIN + NAME UNLOCK
+============================================================= -->
+<div id="sceneRain" class="scene sceneRain active">
+    <canvas id="rainCanvas"></canvas>
+    <div class="lightning" id="lightning"></div>
+    <canvas id="rippleCanvas"></canvas>
+    <div class="rainDim" id="rainDim"></div>
+
+    <div class="rainContent">
+        <p id="waitingText" class="waitingText">Someone is waiting inside…</p>
+
+        <div id="unlockBox" class="unlockBox">
+            <p class="unlockLabel">Enter her name</p>
+            <input type="text" id="nameInput" maxlength="10" autocomplete="off" spellcheck="false">
+            <div class="unlockUnderline"></div>
+        </div>
+
+        <div id="spacedName" class="spacedName"></div>
+        <p id="accessGranted" class="accessGranted"></p>
+    </div>
+</div>
+
+<!-- ============================================================
+     SCENE 2: PUDDLE REFLECTION
+============================================================= -->
+<div id="scenePuddle" class="scene scenePuddle">
+    <div class="streetBg"></div>
+    <div id="puddle" class="puddle">
+        <img id="reflectionImg" class="reflectionImg" src="Images/photo1.jpg" alt="">
+        <div class="puddleShine"></div>
+    </div>
+    <p class="puddleHint" id="puddleHint">tap the reflection</p>
+</div>
+
+<!-- ============================================================
+     SCENE 3a: PHOTO 1 — WATER RIPPLE REVEAL
+============================================================= -->
+<div id="scenePhoto1" class="scene photoScene">
+    <canvas id="rippleRevealCanvas"></canvas>
+    <img id="photo1Img" class="photoImg rippleReveal" src="Images/photo1.jpg" alt="">
+    <p class="photoCaption" id="caption1">Aankho mein nasha hai</p>
+    <button class="continueBtn" id="continue1">continue →</button>
+</div>
+
+<!-- ============================================================
+     SCENE 3b: PHOTO 2 — PROJECTOR REVEAL
+============================================================= -->
+<div id="scenePhoto2" class="scene photoScene projectorScene">
+    <div class="projectorBeam"></div>
+    <div class="filmGrain"></div>
+    <div class="scanlines"></div>
+    <img id="photo2Img" class="photoImg projectorReveal" src="Images/photo2.jpg" alt="">
+    <p class="photoCaption" id="caption2">Humari love guru</p>
+    <button class="continueBtn" id="continue2">continue →</button>
+</div>
+
+<!-- ============================================================
+     SCENE 3c: PHOTO 3 — CONSTELLATION REVEAL
+============================================================= -->
+<div id="scenePhoto3" class="scene photoScene constScene">
+    <canvas id="constCanvas"></canvas>
+    <img id="photo3Img" class="photoImg constPhoto" src="Images/photo3.jpg" alt="">
+    <p class="photoCaption" id="caption3"><tere liye special gift</p>
+    <button class="continueBtn" id="continue3">continue →</button>
+</div>
+
+<!-- ============================================================
+     SCENE 3d: PHOTO 4 — TOUCH TO SHARPEN
+============================================================= -->
+<div id="scenePhoto4" class="scene photoScene">
+    <img id="photo4Img" class="photoImg blurPhoto" src="Images/photo4.jpg" alt="">
+    <p class="blurHint" id="blurHint">move your finger across the screen</p>
+    <p class="photoCaption" id="caption4" style="opacity:0;">The cutie pie in the helmet</p>
+    <button class="continueBtn" id="continue4" style="display:none;">continue →</button>
+</div>
+
+<!-- ============================================================
+     SCENE 4: MYSTERY — MISSING MEMORY
+============================================================= -->
+<div id="sceneMystery" class="scene sceneMystery">
+    <p id="mysteryLine1" class="mysteryLine">Four memories found.</p>
+    <p id="mysteryLine2" class="mysteryLine">But something is missing…</p>
+
+    <div id="memorySlots" class="memorySlots"></div>
+
+    <p id="mysteryLine3" class="mysteryLine mysteryFinal">Maybe the missing picture isn't a picture.</p>
+    <button class="continueBtn" id="continueMystery" style="display:none;">continue →</button>
+</div>
+
+<!-- ============================================================
+     SCENE 5: TIME FREEZE
+============================================================= -->
+<div id="sceneClock" class="scene sceneClock">
+    <div id="clockDisplay" class="clockDisplay">11:59:57</div>
+    <p id="freezeLine" class="freezeLine"></p>
+</div>
+
+<!-- ============================================================
+     SCENE 6: THE LAST RAINDROP
+============================================================= -->
+<div id="sceneLastDrop" class="scene sceneLastDrop">
+    <div id="lastDrop" class="lastDrop"></div>
+    <div id="dropThumbs" class="dropThumbs"></div>
+    <canvas id="dropRippleCanvas"></canvas>
+    <p id="rippleWord" class="rippleWord"></p>
+    <p id="dropLine" class="dropLine"></p>
+</div>
+
+<!-- ============================================================
+     SCENE 7: FOUR MEMORIES AWAKEN
+============================================================= -->
+<div id="sceneMemories" class="scene sceneMemories">
+    <canvas id="beamCanvas"></canvas>
+    <div class="memFrame memFrame1" id="memFrame1">
+        <canvas class="memCanvas" id="memCanvas1"></canvas>
+        <img src="Images/photo1.jpg" class="memImg memImgRipple" id="memImg1" alt="">
+    </div>
+    <div class="memFrame memFrame2" id="memFrame2">
+        <div class="memScan"></div>
+        <img src="Images/photo2.jpg" class="memImg memImgProjector" id="memImg2" alt="">
+    </div>
+    <div class="memFrame memFrame3" id="memFrame3">
+        <canvas class="memCanvas" id="memCanvas3"></canvas>
+        <img src="Images/photo3.jpg" class="memImg memImgParticle" id="memImg3" alt="">
+    </div>
+    <div class="memFrame memFrame4" id="memFrame4">
+        <img src="Images/photo4.jpg" class="memImg memImgBlur" id="memImg4" alt="">
+    </div>
+    <p id="memLine" class="memLine"></p>
+</div>
+
+<!-- ============================================================
+     SCENE 8: CAKE MATERIALIZATION
+============================================================= -->
+<div id="sceneCake" class="scene sceneCake">
+    <canvas id="cakeGlowCanvas"></canvas>
+    <div id="glowSphere" class="glowSphere"></div>
+    <div id="cakeWrap" class="cakeWrap">
+        <div class="candleRow" id="candleRow">
+            <div class="candle"><span class="flame"></span></div>
+            <div class="candle"><span class="flame"></span></div>
+            <div class="candle"><span class="flame"></span></div>
+        </div>
+        <div class="cakeBody">🎂</div>
+    </div>
+</div>
+
+<!-- ============================================================
+     SCENE 9: FINAL BIRTHDAY REVEAL
+============================================================= -->
+<div id="sceneFinal" class="scene sceneFinal">
+    <canvas id="goldRainCanvas"></canvas>
+
+    <div class="finalCakeWrap">
+        <img src="Images/photo1.jpg" class="orbitPhoto orbit1" alt="">
+        <img src="Images/photo2.jpg" class="orbitPhoto orbit2" alt="">
+        <img src="Images/photo3.jpg" class="orbitPhoto orbit3" alt="">
+        <img src="Images/photo4.jpg" class="orbitPhoto orbit4" alt="">
+        <div class="finalCake">🎂</div>
+    </div>
+
+    <h1 class="bdayReveal">
+        <span class="sweepLine" id="sweepLine1">HAPPY BIRTHDAY</span>
+        <span class="sweepLine" id="sweepLine2">SANIYA ❤️</span>
+    </h1>
+
+    <p id="universeLine" class="universeLine"></p>
+    <p id="finalDate" class="finalDateText"></p>
+    <p id="finalSign" class="finalSignText"></p>
+
+    <audio id="bgMusic" src="Music/bgmusic.mp3" loop preload="auto"></audio>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
